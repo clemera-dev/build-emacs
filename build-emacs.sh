@@ -14,7 +14,7 @@ sudo apt-get -qq install -y stow build-essential libx11-dev \
      libjpeg-dev libgif-dev libtiff5-dev libncurses5-dev \
      libxft-dev librsvg2-dev libmagickcore-dev libmagick++-dev \
      libxml2-dev libgpm-dev libotf-dev libm17n-dev \
-     libgtk-3-dev libwebkitgtk-3.0-dev libxpm-dev wget
+     libgtk-3-dev libwebkitgtk-3.0-dev libxpm-dev libjansson-dev wget
 
 # from Ubuntu 16.10, libgnutls-dev, libpng12-dev is no longer available
 sudo apt-get -qq install libgnutls-dev libpng12-dev || \
