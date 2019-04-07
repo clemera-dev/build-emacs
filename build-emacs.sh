@@ -6,9 +6,22 @@
 
 set -eu
 
-readonly version="26.1"
+# readonly 26.1
+version="$1"
 
-# download source package
+# install dependencies
+sudo apt -q update
+## default deps
+## sudo apt build-dep emacs
+## optional stuff and stow
+sudo apt -qy install wget stow build-essential
+     libx11-dev libjpeg-dev libgif-dev libtiff5-dev libncurses5-dev \
+     libxft-dev librsvg2-dev libmagickcore-dev libmagick++-dev \
+     libxml2-dev libgpm-dev libotf-dev libm17n-dev \
+     libgtk-3-dev libwebkitgtk-3.0-dev libxpm-dev libjansson-dev\
+     libgnutls28-dev libpng-dev
+
+# get emacs tarball
 if [[ ! -d emacs-"$version" ]]; then
 
    wget https://ftp.gnu.org/gnu/gnu-keyring.gpg
@@ -27,25 +40,13 @@ if [[ ! -d emacs-"$version" ]]; then
 
 fi
 
+# setup build dir
+mkdir -p "$HOME/.emacs.d"
+cd "$HOME/.emacs.d"
 
-# install dependencies
-sudo apt-get -qq update
-# default deps
-sudo apt build-dep emacs
-# optional stuff and stow
-sudo apt-get -qq install -y stow build-essential libx11-dev \
-     libjpeg-dev libgif-dev libtiff5-dev libncurses5-dev \
-     libxft-dev librsvg2-dev libmagickcore-dev libmagick++-dev \
-     libxml2-dev libgpm-dev libotf-dev libm17n-dev \
-     libgtk-3-dev libwebkitgtk-3.0-dev libxpm-dev libjansson-dev wget
-
-# from Ubuntu 16.10, libgnutls-dev, libpng12-dev is no longer available
-sudo apt-get -qq install libgnutls28-dev libpng-dev
-
-# create /usr/local subdirectories
+# create needed /usr/local subdirectories
 sudo mkdir -p /usr/local/{bin,etc,games,include,lib,libexec,man,sbin,share,src}
-
-# build and install
+# setup stow dirs
 sudo mkdir -p /usr/local/stow
 sudo chown -R clemera /usr/local/stow
 
@@ -55,8 +56,7 @@ cd emacs-"$version"
     --with-x-toolkit=gtk3\
     --with-modules
 
-# make
+# install
 make install prefix=/usr/local/stow/emacs-"$version"
-
 cd /usr/local/stow
 sudo stow emacs-"$version"
