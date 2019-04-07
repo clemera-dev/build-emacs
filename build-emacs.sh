@@ -30,6 +30,9 @@ fi
 
 # install dependencies
 sudo apt-get -qq update
+# default deps
+sudo apt build-dep emacs
+# optional stuff and stow
 sudo apt-get -qq install -y stow build-essential libx11-dev \
      libjpeg-dev libgif-dev libtiff5-dev libncurses5-dev \
      libxft-dev librsvg2-dev libmagickcore-dev libmagick++-dev \
