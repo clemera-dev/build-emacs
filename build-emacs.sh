@@ -6,6 +6,11 @@
 
 set -eu
 
+# the home for setup
+mkdir -p "$HOME/.emacs.d"
+cd "$HOME/.emacs.d"
+
+
 # readonly 26.1
 version="$1"
 
@@ -14,7 +19,7 @@ sudo apt -q update
 ## default deps
 ## sudo apt build-dep emacs
 ## optional stuff and stow
-sudo apt -qy install wget stow build-essential
+sudo apt -qy install wget stow build-essential \
      libx11-dev libjpeg-dev libgif-dev libtiff5-dev libncurses5-dev \
      libxft-dev librsvg2-dev libmagickcore-dev libmagick++-dev \
      libxml2-dev libgpm-dev libotf-dev libm17n-dev \
@@ -40,10 +45,6 @@ if [[ ! -d emacs-"$version" ]]; then
 
 fi
 
-# setup build dir
-mkdir -p "$HOME/.emacs.d"
-cd "$HOME/.emacs.d"
-
 # create needed /usr/local subdirectories
 sudo mkdir -p /usr/local/{bin,etc,games,include,lib,libexec,man,sbin,share,src}
 # setup stow dirs
@@ -58,5 +59,6 @@ cd emacs-"$version"
 
 # install
 make install prefix=/usr/local/stow/emacs-"$version"
-cd /usr/local/stow
-sudo stow emacs-"$version"
+
+# cd /usr/local/stow
+# sudo stow emacs-"$version"
