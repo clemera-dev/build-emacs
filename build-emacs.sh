@@ -3,60 +3,94 @@
 # Build latest version of Emacs, version management with stow
 # OS: Ubuntu 14.04 LTS and newer
 # Toolkit: gtk3
+# provide either version for official release
+# or tar.xz url and dignature url for that
 
 set -eu
 
-# readonly 26.1
-version="$1"
+# or tarball url and signature url
+if [[ -n  "$2" ]]; then
+  # urls for prereleases
+  urlt="$1"
+  # extract version
+  version=$(basename -s .tar.xz "$urlt")
+  version=${version/emacs-/}
+  urls="$2"
+else
+  # 26.1
+  version="$1"
+  urlt=https://ftp.gnu.org/gnu/emacs/emacs-"$version".tar.xz
+  urls=https://ftp.gnu.org/gnu/emacs/emacs-"$version".tar.xz.sig
+fi
 
 # install dependencies
 sudo apt -q update
 ## default deps
-## sudo apt build-dep emacs
-## optional stuff and stow
-sudo apt -qy install wget stow build-essential
+# goto Software & Updates (software-properties-gtk) and enable Source Code repos
+sudo apt -qy build-dep emacs
+
+## script deps and libs
+sudo apt -qy install wget stow atool build-essential
+
+# anny additional libs for extra feaures
+# man of them will included in the build for some you
+# need to pass flags to configure, see INSTALL
+sudo apt -qy install \
      libx11-dev libjpeg-dev libgif-dev libtiff5-dev libncurses5-dev \
      libxft-dev librsvg2-dev libmagickcore-dev libmagick++-dev \
      libxml2-dev libgpm-dev libotf-dev libm17n-dev \
-     libgtk-3-dev libwebkitgtk-3.0-dev libxpm-dev libjansson-dev\
+     libgtk-3-dev libwebkitgtk-3.0-dev libxpm-dev libjansson-dev \
      libgnutls28-dev libpng-dev
 
-# get emacs tarball
-if [[ ! -d emacs-"$version" ]]; then
+# download build stuff
+mkdir -p build
+cd build
+#
+wget https://ftp.gnu.org/gnu/gnu-keyring.gpg
+wget "$urlt"
+wget "$urls"
 
-   wget https://ftp.gnu.org/gnu/gnu-keyring.gpg
-   wget https://ftp.gnu.org/gnu/emacs/emacs-"$version".tar.xz
-   wget https://ftp.gnu.org/gnu/emacs/emacs-"$version".tar.xz.sig
+gpg --verify --no-default-keyring --keyring ./gnu-keyring.gpg emacs-"$version".tar.xz.sig
 
-   gpg --verify --no-default-keyring --keyring ./gnu-keyring.gpg emacs-"$version".tar.xz.sig
+# check and give chance to abort
+read -p "Continue (y/n)?" choice
+case "$choice" in
+  y|Y ) : ;;
+  * ) exit 1;;
+esac
 
-   read -p "Continue (y/n)?" choice
-   case "$choice" in
-       y|Y ) : ;;
-       * ) exit 1;;
-   esac
 
-   tar xvf emacs-"$version".tar.xz
+# extract and save extraction dir for make
+mkdir -p build
+cd build
+> out
+echo "Extracting......................................"
+atool --save-outdir "./out" -x emacs-"$version".tar.xz
 
-fi
+# compile
+out=$(cat out)
+cd "$out"
+echo "Configure......................................"
+./configure --with-modules
 
-# setup build dir
-mkdir -p "$HOME/.emacs.d"
-cd "$HOME/.emacs.d"
-
-# create needed /usr/local subdirectories
-sudo mkdir -p /usr/local/{bin,etc,games,include,lib,libexec,man,sbin,share,src}
 # setup stow dirs
 sudo mkdir -p /usr/local/stow
-sudo chown -R clemera /usr/local/stow
-
-cd emacs-"$version"
-./configure \
-    --with-xft \
-    --with-x-toolkit=gtk3\
-    --with-modules
+# create needed /usr/local subdirectories
+sudo mkdir -p /usr/local/{bin,etc,games,include,lib,libexec,man,sbin,share,src}
 
 # install
-make install prefix=/usr/local/stow/emacs-"$version"
-cd /usr/local/stow
-sudo stow emacs-"$version"
+echo "Installing...................................."
+sudo chown -R clemera /usr/local/stow
+make -j $(nproc) install prefix=/usr/local/stow/emacs-"$version"
+
+# stowing
+echo "$version read to stow..."
+#cd /usr/local/stow
+#stow emacs-"$version"
+
+
+
+
+
+
+
