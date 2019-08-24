@@ -67,17 +67,12 @@ cd build
 echo "Extracting......................................"
 atool --save-outdir "./out" -x emacs-"$version".tar.xz
 
-<<<<<<< HEAD
 # compile
 out=$(cat out)
 cd "$out"
 echo "Configure......................................"
 ./configure --with-modules
 
-=======
-# create needed /usr/local subdirectories
-sudo mkdir -p /usr/local/{bin,etc,games,include,lib,libexec,man,sbin,share,src}
->>>>>>> 55bd69a20688c282182162613798cb6e2f429e8c
 # setup stow dirs
 sudo mkdir -p /usr/local/stow
 # create needed /usr/local subdirectories
