@@ -71,7 +71,7 @@ atool --save-outdir "./out" -x emacs-"$version".tar.xz
 out=$(cat out)
 cd "$out"
 echo "Configure......................................"
-./configure --with-modules
+./configure --with-modules --with-jansson
 
 # setup stow dirs
 sudo mkdir -p /usr/local/stow
