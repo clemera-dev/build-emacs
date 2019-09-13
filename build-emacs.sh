@@ -67,8 +67,12 @@ cd build
 echo "Extracting......................................"
 atool --save-outdir "./out" -x emacs-"$version".tar.xz
 
-# compile
+
 out=$(cat out)
+# save sources
+mkdir -p "$HOME/.emacs.d/emacs-$version"
+cp -r "$out" "$HOME/.emacs.d/emacs-$version"
+# compile
 cd "$out"
 echo "Configure......................................"
 ./configure --with-modules --with-jansson
