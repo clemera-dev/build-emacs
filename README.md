@@ -1,6 +1,7 @@
 Helper script for Emacs compilation on Ubuntu using official tarball releases...
 
-Ativate sytemd service:
+You can copy the service file to ~/.config/systemd/user/emacs.service and
+activate sytemd service using:
    
        systemctl --user enable --now emacs
        
