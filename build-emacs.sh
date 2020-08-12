@@ -75,7 +75,7 @@ cp -r "$out" "$HOME/.emacs.d/emacs-$version"
 # compile
 cd "$out"
 echo "Configure......................................"
-./configure --with-modules --with-jansson
+./configure --with-modules --with-jansson --with-cairo
 
 # setup stow dirs
 sudo mkdir -p /usr/local/stow
