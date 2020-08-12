@@ -93,16 +93,9 @@ echo "$version read to stow..."
 #stow emacs-"$version"
 
 
-
-
-
-
-
-<<<<<<< HEAD
-=======
 # install
-make install prefix=/usr/local/stow/emacs-"$version"
+# make install prefix=/usr/local/stow/emacs-"$version"
 
 # cd /usr/local/stow
 # sudo stow emacs-"$version"
->>>>>>> 55bd69a20688c282182162613798cb6e2f429e8c
+
